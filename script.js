@@ -8,14 +8,18 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(function (donnees) {
             const recette = donnees.meals[0];
+            const carte = $("<div>").addClass("carte");
 
-            $("#recette").html("<h2></h2><img>");
+            $("<h2>")
+            .text(recette.strMeal)
+            .appendTo(carte);
 
-            $("#recette h2").text(recette.strMeal);
+            $("<img>")
+            .attr("src", recette.strMealThumb)
+            .attr("alt", recette.strMeal)
+            .appendTo(carte);
 
-            $("#recette img")
-                .attr("src", recette.strMealThumb)
-                .attr("alt", recette.strMeal);
+            $("#recette").append(carte);
         })
         .catch(function (erreur) {
             console.error("Erreur :", erreur);
@@ -23,10 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    affichageRecette();
+    for (let i = 0; i < 8; i++) {
+        affichageRecette();
+    }
 
     $("#autre-recette").on("click", function(){
-        affichageRecette();
+        $("#recette").empty();
+        for (let i = 0; i < 8; i++) {
+            affichageRecette();
+        }
     });
 
 });
