@@ -74,7 +74,7 @@ function afficherModaleRecette(recette) {
     popup.append(contenu).appendTo("body");
     popup.on("close", function () { $(this).remove(); });
     popup.on("click", function (evenement) {
-        // Un clic directement sur le fond du dialog ferme la fenêtre.
+        // un clic en dehors de la fenetre la ferme
         if (evenement.target === this) this.close();
     });
     popup[0].showModal();
