@@ -675,3 +675,215 @@ footer {
         transition: none !important;
     }
 }
+
+#explorer-categories {
+    min-height: 620px;
+    padding: 0 var(--bord) 64px;
+}
+
+#categorie-grid {
+    min-height: 340px;
+}
+
+#categorie-recettes {
+    min-height: 420px;
+}
+
+#recette-categorie {
+    min-height: 340px;
+}
+
+#explorer-categories h2 {
+    margin: 0 0 28px;
+    font-family: var(--police-titre);
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--vert);
+}
+
+.categorie-grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 22px;
+    transition: opacity .25s ease;
+}
+
+.categorie-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 170px;
+    padding: 16px 12px 14px;
+    border: 1px solid rgba(47, 91, 65, 0.06);
+    border-radius: 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.92));
+    box-shadow: 0 10px 24px rgba(49, 71, 59, 0.08);
+    cursor: pointer;
+    transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease;
+}
+
+.categorie-card:hover,
+.categorie-card:focus-visible {
+    transform: translateY(-5px) scale(1.01);
+    box-shadow: 0 18px 36px rgba(49, 71, 59, 0.12);
+    border-color: rgba(47, 91, 65, 0.18);
+    outline: none;
+}
+
+.categorie-card img {
+    width: 100%;
+    max-width: 120px;
+    height: 92px;
+    object-fit: cover;
+    border-radius: 16px;
+    background: var(--sauge);
+}
+
+.categorie-label {
+    margin-top: 10px;
+    font-family: var(--police-titre);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--texte);
+}
+
+.categorie-recettes {
+    display: block;
+    width: 100%;
+    margin-top: 8px;
+}
+
+.retour-categories {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0 24px;
+    padding: 10px 18px;
+    border: 1px solid var(--vert);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--vert);
+    font-family: var(--police-titre);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color .2s ease, color .2s ease, transform .15s ease;
+}
+
+.retour-categories:hover,
+.retour-categories:focus-visible {
+    background: var(--vert);
+    color: var(--blanc);
+    outline: none;
+}
+
+.retour-categories:active {
+    transform: scale(.98);
+}
+
+.recette-categorie-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 24px;
+    align-content: start;
+}
+
+.recette-categorie-grid .carte {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--rayon-carte);
+    background: var(--blanc);
+    box-shadow: var(--ombre-carte);
+    cursor: pointer;
+    animation: apparition .5s cubic-bezier(.2, .7, .3, 1) backwards;
+    transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.recette-categorie-grid .carte:nth-child(2) { animation-delay: 50ms; }
+.recette-categorie-grid .carte:nth-child(3) { animation-delay: 100ms; }
+.recette-categorie-grid .carte:nth-child(4) { animation-delay: 150ms; }
+.recette-categorie-grid .carte:nth-child(5) { animation-delay: 200ms; }
+.recette-categorie-grid .carte:nth-child(6) { animation-delay: 250ms; }
+.recette-categorie-grid .carte:nth-child(7) { animation-delay: 300ms; }
+.recette-categorie-grid .carte:nth-child(8) { animation-delay: 350ms; }
+
+.recette-categorie-grid .carte:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--ombre-carte-survol);
+}
+
+.recette-categorie-grid .carte img {
+    order: -1;
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    background: var(--sauge);
+}
+
+.recette-categorie-grid .carte h2 {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    margin-bottom: 14px;
+    padding: 16px 18px 0;
+    font-family: var(--police-titre);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--texte);
+}
+
+.recette-categorie-grid .carte::after {
+    content: "Voir";
+    align-self: flex-start;
+    margin: auto 18px 18px;
+    padding: 6px 16px;
+    border-radius: var(--rayon-pilule);
+    background: var(--vert);
+    font-family: var(--police-titre);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--blanc);
+    transition: background-color .2s;
+}
+
+.recette-categorie-grid .carte:hover::after {
+    background: var(--vert-fonce);
+}
+
+#explorer-categories.is-category-open #categorie-grid {
+    display: none;
+}
+
+@media (max-width: 1200px) {
+    .categorie-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .recette-categorie-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .categorie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .recette-categorie-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 540px) {
+    .categorie-grid,
+    .recette-categorie-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
