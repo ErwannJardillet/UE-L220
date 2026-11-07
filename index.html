@@ -12,18 +12,34 @@
             <nav>
                 <ul>
                     <li><a href="#idee" title="Idee de recette">Idée de recette</a></li>
-                    <li></li>
-                    <li></li>
+                    <li><a href="#hasard" title="Des idee aux hasard">Des idée aux hasard</a></li>
+                    <li><a href="#explorer-categories" title="Explorer par catégories">Explorer par catégories</a></li>
                 </ul>
             </nav>
         </header>
         <main>
 
             <section id="idee">
-                <h2>Idée de recette</h2>
+                <h2>Trouvez votre prochaine recette</h2>
                 <input type="text" id="recherche" placeholder="rechercher une recette"/>
-                <button type="button" id="autre-recette">Autre sélection</button>
+                <select id="categorie">
+                    <option value="">Toutes les catégories</option>
+                </select>
+
+                <select id="pays">
+                    <option value="">Toutes les pays</option>
+                </select>
+
+                <select id="ingredient">
+                    <option value="">Toutes les ingredient</option>
+                </select>
+                <div id="resultat"></div>
+            </section>
+
+             <section id="hasard">
+                <h2>Des idée au hasard</h2>
                 <div id="recette"></div>
+                <button type="button" id="autre-recette">Autre sélection</button>
             </section>
 
             <section id="explorer-categories" aria-label="Explorer par catégories">
@@ -47,5 +63,6 @@
         <script src="script.js"></script>
         <script src="recette-modal.js"></script>
         <script src="recette-du-jour.js"></script>
+        <script src="filtre.js"></script>
     </body>
 </html>

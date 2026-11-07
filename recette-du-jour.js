@@ -30,7 +30,7 @@ $(function () {
     section.append(titre, contenu);
 
     // On place la section avant les recettes aléatoires
-    $("#idee").before(section);
+    $("#hasard").before(section);
 
 
     // Récupère la date du jour au format AAAA-MM-JJ

@@ -32,6 +32,88 @@ document.addEventListener('DOMContentLoaded', () => {
         return carte;
     }
 
+    //Recherche de recettes avec le filtres catégorie et l'input recherche
+    function rechercheRecettes() {
+        const recherche = $('#recherche').val().trim().toLowerCase();
+        const categorie = $('#categorie').val();
+
+        // Aucun filtre : afficher les recettes aléatoires
+        if (recherche === '' && categorie === '') {
+            $('#resultat').empty();
+            return;
+        }
+
+        // Une catégorie est sélectionnée
+        if (categorie !== '') {
+            $.ajax({
+                url: 'https://www.themealdb.com/api/json/v1/1/filter.php',
+                method: 'GET',
+                dataType: 'json',
+                data: { c: categorie }
+            })
+            .then(function (donnees) {
+                const recettes = donnees.meals || [];
+
+                const resultats = recettes.filter(function (recette) {
+                    return recette.strMeal.toLowerCase().includes(recherche);
+                });
+
+                $('#resultat').empty();
+
+                if (resultats.length === 0) {
+                    $('#resultat').text('Aucune recette trouvée.');
+                    return;
+                }
+
+                resultats.slice(0, 8).forEach(function (recette) {
+                    $('#resultat').append(creerCarteRecette(recette));
+                });
+            })
+            .catch(function (erreur) {
+                console.error('Erreur :', erreur);
+                $('#resultat').text('Impossible de rechercher les recettes.');
+            });
+            return;
+        }
+
+        // Recherche sans catégorie
+        $.ajax({
+            url: 'https://www.themealdb.com/api/json/v1/1/search.php',
+            method: 'GET',
+            dataType: 'json',
+            data: { s: recherche }
+        })
+        .then(function (donnees) {
+            $('#resultat').empty();
+
+            const recettes = donnees.meals || [];
+
+            if (recettes.length === 0) {
+                $('#resultat').text('Aucune recette trouvée.');
+                return;
+            }
+
+            recettes.slice(0, 8).forEach(function (recette) {
+                $('#resultat').append(creerCarteRecette(recette));
+            });
+        })
+        .catch(function (erreur) {
+                console.error('Erreur :', erreur);
+                $('#resultat').text('Impossible de rechercher les recettes.');
+        });
+    };
+
+    // Quand on écrit dans la barre de recherche
+    $('#recherche').on('input', function () {
+        rechercheRecettes();
+    });
+
+    // Quand on choisit une catégorie
+    $('#categorie').on('change', function () {
+        rechercheRecettes();
+    });
+
+    //Affiche 8 recettes aléatoire de l'api
     function afficherRecettesAleatoires() {
         $('#recette').empty();
         for (let i = 0; i < 8; i++) {
@@ -51,6 +133,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
     }
+
+    // Bouton pour changer les recette afficher au hasard
+    $('#autre-recette').on('click', function () {
+        afficherRecettesAleatoires();
+    });
 
     function afficherCategories() {
         $categorieGrid.empty();
@@ -128,49 +215,6 @@ document.addEventListener('DOMContentLoaded', () => {
         $recetteCategorie.empty();
     }
 
-    // Affichage de 8 recette au hasard
-    afficherRecettesAleatoires();
-    afficherCategories();
-
-    // Bouton pour changer les recette afficher au hasard
-    $('#autre-recette').on('click', function () {
-        afficherRecettesAleatoires();
-    });
-
-    // Utilisation de la barre de recherche
-    $('#recherche').on('input', function () {
-        const recherche = $(this).val();
-
-        if (recherche === '') {
-            afficherRecettesAleatoires();
-            return;
-        }
-
-        $.ajax({
-            url: 'https://www.themealdb.com/api/json/v1/1/search.php',
-            method: 'GET',
-            dataType: 'json',
-            data: { s: recherche },
-        })
-        .then(function (donnees) {
-            $('#recette').empty();
-
-            if (!donnees.meals) {
-                $('#recette').text('Aucune recette trouvée.');
-                return;
-            }
-
-            for (let i = 0; i < donnees.meals.length && i < 8; i++) {
-                const recette = donnees.meals[i];
-                $('#recette').append(creerCarteRecette(recette));
-            }
-        })
-        .catch(function (erreur) {
-            console.error('Erreur :', erreur);
-            $('#recette').text('Impossible de rechercher les recettes.');
-        });
-    });
-
     $(document).on('click', '.categorie-card', function (event) {
         event.preventDefault();
         const scrollY = window.scrollY;
@@ -191,5 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
             window.scrollTo({ top: scrollY, behavior: 'instant' });
         }, 0);
     });
+
+    afficherRecettesAleatoires();
+    afficherCategories();
+    chargerCategories();
 
 });
