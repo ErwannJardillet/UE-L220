@@ -36,9 +36,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function rechercheRecettes() {
         const recherche = $('#recherche').val().trim().toLowerCase();
         const categorie = $('#categorie').val();
+        const pays = $('#pays').val();
+        const ingredient = $('#ingredient').val();
 
         // Aucun filtre : afficher les recettes aléatoires
-        if (recherche === '' && categorie === '') {
+        if (recherche === '' && categorie === '' && ingredient === '' && pays === '') {
             $('#resultat').empty();
             return;
         }
