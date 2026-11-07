@@ -32,86 +32,85 @@ document.addEventListener('DOMContentLoaded', () => {
         return carte;
     }
 
-    //Recherche de recettes avec le filtres catégorie et l'input recherche
+    // Affiche les 8 premières recettes trouvées dans #resultat
+    function afficherResultats(recettes) {
+        $('#resultat').empty();
+
+        if (recettes.length === 0) {
+            $('#resultat').text('Aucune recette trouvée.');
+            return;
+        }
+
+        recettes.slice(0, 8).forEach(function (recette) {
+            $('#resultat').append(creerCarteRecette(recette));
+        });
+    }
+
+    // Numéro de la dernière recherche lancée : sert à ignorer les réponses
+    // qui arrivent après une recherche plus récente
+    let numeroRecherche = 0;
+
+    //Recherche de recettes avec les filtres (catégorie, pays, ingrédient) et l'input recherche
     function rechercheRecettes() {
         const recherche = $('#recherche').val().trim().toLowerCase();
         const categorie = $('#categorie').val();
         const pays = $('#pays').val();
         const ingredient = $('#ingredient').val();
 
-        // Aucun filtre : afficher les recettes aléatoires
+        numeroRecherche++;
+        const numero = numeroRecherche;
+
+        // Aucun filtre ni texte : on vide les résultats
         if (recherche === '' && categorie === '' && ingredient === '' && pays === '') {
             $('#resultat').empty();
             return;
         }
 
-        // Une catégorie est sélectionnée
-        if (categorie !== '') {
-            $.ajax({
-                url: 'https://www.themealdb.com/api/json/v1/1/filter.php',
+        let promesseRecettes;
+
+        if (categorie !== '' || pays !== '' || ingredient !== '') {
+            // Au moins un filtre choisi : recettes communes à tous les filtres, puis filtre sur le nom
+            promesseRecettes = rechercherParFiltres({ categorie, pays, ingredient })
+                .then(function (recettes) {
+                    return recettes.filter(function (recette) {
+                        return recette.strMeal.toLowerCase().includes(recherche);
+                    });
+                });
+        } else {
+            // Texte seul : recherche par nom
+            promesseRecettes = Promise.resolve($.ajax({
+                url: 'https://www.themealdb.com/api/json/v1/1/search.php',
                 method: 'GET',
                 dataType: 'json',
-                data: { c: categorie }
-            })
+                data: { s: recherche }
+            }))
             .then(function (donnees) {
-                const recettes = donnees.meals || [];
-
-                const resultats = recettes.filter(function (recette) {
-                    return recette.strMeal.toLowerCase().includes(recherche);
-                });
-
-                $('#resultat').empty();
-
-                if (resultats.length === 0) {
-                    $('#resultat').text('Aucune recette trouvée.');
-                    return;
-                }
-
-                resultats.slice(0, 8).forEach(function (recette) {
-                    $('#resultat').append(creerCarteRecette(recette));
-                });
-            })
-            .catch(function (erreur) {
-                console.error('Erreur :', erreur);
-                $('#resultat').text('Impossible de rechercher les recettes.');
+                return donnees.meals || [];
             });
-            return;
         }
 
-        // Recherche sans catégorie
-        $.ajax({
-            url: 'https://www.themealdb.com/api/json/v1/1/search.php',
-            method: 'GET',
-            dataType: 'json',
-            data: { s: recherche }
-        })
-        .then(function (donnees) {
-            $('#resultat').empty();
-
-            const recettes = donnees.meals || [];
-
-            if (recettes.length === 0) {
-                $('#resultat').text('Aucune recette trouvée.');
-                return;
-            }
-
-            recettes.slice(0, 8).forEach(function (recette) {
-                $('#resultat').append(creerCarteRecette(recette));
-            });
-        })
-        .catch(function (erreur) {
+        promesseRecettes
+            .then(function (recettes) {
+                // Une recherche plus récente a été lancée : on ignore cette réponse
+                if (numero !== numeroRecherche) return;
+                afficherResultats(recettes);
+            })
+            .catch(function (erreur) {
+                if (numero !== numeroRecherche) return;
                 console.error('Erreur :', erreur);
                 $('#resultat').text('Impossible de rechercher les recettes.');
-        });
-    };
+            });
+    }
 
-    // Quand on écrit dans la barre de recherche
+    // Quand on écrit dans la barre de recherche : on attend 300 ms sans frappe avant de chercher
+    let minuteurRecherche;
     $('#recherche').on('input', function () {
-        rechercheRecettes();
+        clearTimeout(minuteurRecherche);
+        minuteurRecherche = setTimeout(rechercheRecettes, 300);
     });
 
-    // Quand on choisit une catégorie
-    $('#categorie').on('change', function () {
+    // Quand on choisit une catégorie, un pays ou un ingrédient
+    $('#categorie, #pays, #ingredient').on('change', function () {
         rechercheRecettes();
     });
 
@@ -241,5 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
     afficherRecettesAleatoires();
     afficherCategories();
     chargerCategories();
+    chargerPays();
+    chargerIngredient();
 
 });

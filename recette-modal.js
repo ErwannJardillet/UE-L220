@@ -1,6 +1,6 @@
 $(function () {
     // délégation d'événement
-    $(document).on("click", "#recette .carte, #recette-categorie .carte", function () {
+    $(document).on("click", "#recette .carte, #recette-categorie .carte, #resultat .carte", function () {
         const nomRecette = $(this).find("h2").first().text().trim();
         if (!nomRecette) return;
         ouvrirRecette(nomRecette);

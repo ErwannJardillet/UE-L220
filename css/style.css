@@ -141,38 +141,21 @@ nav a:focus-visible {
     border-radius: 4px;
 }
 
-/* ---------- Section idée de recette : hero + bande sauge ---------- */
+/* ---------- Section idée de recette : recherche + filtres ---------- */
 
-/* la section remplit la hauteur restante : la bande sauge rejoint le footer */
+/* 3 colonnes de filtres de 13.5rem + 2 espaces de 12px = 42rem, la largeur de la recherche */
 #idee {
-    flex: 1;
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto 1fr;
-    grid-template-areas:
-        "titre     titre"
-        "recherche bouton"
-        "grille    grille";
-    column-gap: 16px;
-    padding: 40px var(--bord) 0;
-    isolation: isolate;
-}
-
-/* bande sauge pleine largeur derrière la recherche, le bouton et la grille */
-#idee::before {
-    content: "";
-    grid-column: 1 / -1;
-    grid-row: recherche-start / grille-end;
-    z-index: -1;
-    background: var(--sauge);
-    box-shadow: 0 0 0 100vmax var(--sauge);
-    clip-path: inset(0 -100vmax);
+    grid-template-columns: repeat(3, minmax(0, 13.5rem)) minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    padding: 40px var(--bord) 64px;
 }
 
 #idee > h2 {
-    grid-area: titre;
+    grid-column: 1 / -1;
     justify-self: start;
-    margin-bottom: 32px;
+    margin-bottom: 24px;
     padding-bottom: .06em;
     font-family: var(--police-titre);
     font-size: clamp(2.25rem, 4vw, 3rem);
@@ -185,11 +168,10 @@ nav a:focus-visible {
 }
 
 #recherche {
-    grid-area: recherche;
+    grid-column: 1 / -1;
     width: 100%;
     max-width: 42rem;
     height: 56px;
-    margin-top: 28px;
     padding: 0 20px 0 52px;
     border: 1px solid var(--bordure);
     border-radius: var(--rayon-champ);
@@ -212,6 +194,91 @@ nav a:focus-visible {
     outline: none;
     border-color: var(--vert);
     box-shadow: 0 0 0 4px rgba(47, 91, 65, .14);
+}
+
+/* filtres en pilules blanches avec chevron, comme sur la maquette */
+#idee select {
+    width: 100%;
+    height: 44px;
+    padding: 0 42px 0 18px;
+    border: 1px solid var(--bordure);
+    border-radius: var(--rayon-pilule);
+    background: var(--blanc) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234A514A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") right 16px center / 16px no-repeat;
+    box-shadow: 0 2px 6px rgba(30, 35, 30, .05);
+    appearance: none;
+    font-family: var(--police-texte);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--texte);
+    text-overflow: ellipsis;
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s, background-color .2s, color .2s;
+}
+
+#idee select:hover {
+    border-color: #CDD3C8;
+}
+
+#idee select:focus {
+    outline: none;
+    border-color: var(--vert);
+    box-shadow: 0 0 0 4px rgba(47, 91, 65, .14);
+}
+
+/* filtre actif (autre chose que l'option vide) : la pilule prend le vert des tags */
+#idee select:not(:has(option[value=""]:checked)) {
+    border-color: var(--vert);
+    background-color: var(--tag-vert);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5B41' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    font-weight: 600;
+    color: var(--vert);
+}
+
+/* la liste déroulante garde un style neutre, même quand le filtre est actif */
+#idee select option {
+    background: var(--blanc);
+    font-weight: 400;
+    color: var(--texte);
+}
+
+/* résultats : même grille que "Des idées au hasard" */
+#resultat {
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-content: start;
+    gap: 24px;
+    margin-top: 20px;
+}
+
+/* message "Aucune recette trouvée." ou erreur : pas de carte, juste du texte */
+#resultat:not(:has(.carte)) {
+    display: block;
+    padding: 36px 24px;
+    border: 1.5px dashed #CDD3C8;
+    border-radius: var(--rayon-carte);
+    background: rgba(255, 255, 255, .6);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--texte-doux);
+    animation: apparition .4s cubic-bezier(.2, .7, .3, 1);
+}
+
+/* pastille loupe au-dessus du message */
+#resultat:not(:has(.carte))::before {
+    content: "";
+    display: block;
+    width: 48px;
+    height: 48px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background: var(--sauge) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232F5B41' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m13.5 8.5-5 5'/%3E%3Cpath d='m8.5 8.5 5 5'/%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.3-4.3'/%3E%3C/svg%3E") center / 22px no-repeat;
+}
+
+/* aucun filtre : le bloc disparaît */
+#resultat:empty {
+    display: none;
 }
 
 /* même marge haute que la recherche : les deux restent centrés sur la ligne */
@@ -278,7 +345,8 @@ nav a:focus-visible {
     color: var(--texte-doux);
 }
 
-#recette .carte {
+#recette .carte,
+#resultat .carte {
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -290,21 +358,23 @@ nav a:focus-visible {
     transition: transform .25s ease, box-shadow .25s ease;
 }
 
-#recette .carte:nth-child(2) { animation-delay: 50ms; }
-#recette .carte:nth-child(3) { animation-delay: 100ms; }
-#recette .carte:nth-child(4) { animation-delay: 150ms; }
-#recette .carte:nth-child(5) { animation-delay: 200ms; }
-#recette .carte:nth-child(6) { animation-delay: 250ms; }
-#recette .carte:nth-child(7) { animation-delay: 300ms; }
-#recette .carte:nth-child(8) { animation-delay: 350ms; }
+#recette .carte:nth-child(2), #resultat .carte:nth-child(2) { animation-delay: 50ms; }
+#recette .carte:nth-child(3), #resultat .carte:nth-child(3) { animation-delay: 100ms; }
+#recette .carte:nth-child(4), #resultat .carte:nth-child(4) { animation-delay: 150ms; }
+#recette .carte:nth-child(5), #resultat .carte:nth-child(5) { animation-delay: 200ms; }
+#recette .carte:nth-child(6), #resultat .carte:nth-child(6) { animation-delay: 250ms; }
+#recette .carte:nth-child(7), #resultat .carte:nth-child(7) { animation-delay: 300ms; }
+#recette .carte:nth-child(8), #resultat .carte:nth-child(8) { animation-delay: 350ms; }
 
-#recette .carte:hover {
+#recette .carte:hover,
+#resultat .carte:hover {
     transform: translateY(-4px);
     box-shadow: var(--ombre-carte-survol);
 }
 
 /* l'image passe au-dessus du titre */
-#recette .carte img {
+#recette .carte img,
+#resultat .carte img {
     order: -1;
     width: 100%;
     height: 180px;
@@ -312,7 +382,8 @@ nav a:focus-visible {
     background: var(--sauge);
 }
 
-#recette .carte h2 {
+#recette .carte h2,
+#resultat .carte h2 {
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
@@ -328,7 +399,8 @@ nav a:focus-visible {
 }
 
 /* pilule "Voir" : repère visuel, la carte entière ouvre déjà la recette */
-#recette .carte::after {
+#recette .carte::after,
+#resultat .carte::after {
     content: "Voir";
     align-self: flex-start;
     margin: auto 18px 18px;
@@ -343,7 +415,8 @@ nav a:focus-visible {
     transition: background-color .2s;
 }
 
-#recette .carte:hover::after {
+#recette .carte:hover::after,
+#resultat .carte:hover::after {
     background: var(--vert-fonce);
 }
 
@@ -565,7 +638,8 @@ footer {
 /* ---------- Responsive ---------- */
 
 @media (max-width: 1024px) {
-    #recette {
+    #recette,
+    #resultat {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
@@ -579,15 +653,24 @@ footer {
         gap: 20px;
     }
 
+    /* filtres sur 2 colonnes : catégorie + pays, puis ingrédient en dessous */
     #idee {
-        padding-top: 32px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding-block: 32px 48px;
     }
 
     #idee > h2 {
-        margin-bottom: 24px;
+        margin-bottom: 12px;
     }
 
-    #recherche,
+    #recherche {
+        max-width: none;
+    }
+
+    #ingredient {
+        grid-column: 1 / -1;
+    }
+
     #autre-recette {
         margin-top: 24px;
     }
@@ -598,7 +681,13 @@ footer {
         margin-bottom: 48px;
     }
 
-    #recette .carte img {
+    #resultat {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+    }
+
+    #recette .carte img,
+    #resultat .carte img {
         height: 160px;
     }
 }
@@ -613,15 +702,21 @@ footer {
         height: 32px;
     }
 
-    /* sur téléphone, le bouton passe sous la recherche */
+    /* sur téléphone, les filtres s'empilent sous la recherche */
     #idee {
         grid-template-columns: minmax(0, 1fr);
-        grid-template-rows: auto auto auto 1fr;
-        grid-template-areas:
-            "titre"
-            "recherche"
-            "bouton"
-            "grille";
+        gap: 10px;
+    }
+
+    /* 16px minimum : évite le zoom automatique d'iOS au focus */
+    #recherche,
+    #idee select {
+        font-size: 16px;
+    }
+
+    #resultat {
+        grid-template-columns: minmax(0, 1fr);
+        margin-top: 14px;
     }
 
     #autre-recette {
@@ -634,7 +729,8 @@ footer {
         grid-template-columns: minmax(0, 1fr);
     }
 
-    #recette .carte img {
+    #recette .carte img,
+    #resultat .carte img {
         height: 180px;
     }
 
