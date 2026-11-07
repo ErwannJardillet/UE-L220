@@ -331,7 +331,372 @@ nav a:focus-visible {
     outline-offset: 3px;
 }
 
+/* ---------- Recette du jour ---------- */
+
+#recette-du-jour {
+    padding: 0 var(--bord) 72px;
+}
+
+/* même titre que "Explorer par catégories" */
+#recette-du-jour > h2 {
+    margin-bottom: 28px;
+    font-family: var(--police-titre);
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--vert);
+}
+
+/* carte en deux colonnes : photo à gauche, infos à droite (maquette) */
+.carte-du-jour {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    min-height: 420px;
+    overflow: hidden;
+    border-radius: var(--rayon-modale);
+    background: var(--blanc);
+    box-shadow: var(--ombre-carte);
+    cursor: pointer;
+    animation: apparition .5s cubic-bezier(.2, .7, .3, 1);
+    transition: box-shadow .25s ease;
+}
+
+.carte-du-jour:hover {
+    box-shadow: var(--ombre-carte-survol);
+}
+
+.carte-du-jour-visuel {
+    position: relative;
+    overflow: hidden;
+    background: var(--sauge);
+}
+
+/* image en absolu : c'est le texte qui donne la hauteur de la carte, pas la photo carrée */
+.carte-du-jour-visuel img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform .6s cubic-bezier(.2, .7, .3, 1);
+}
+
+.carte-du-jour:hover .carte-du-jour-visuel img {
+    transform: scale(1.04);
+}
+
+/* badge pêche "Sélection du ..." posé sur la photo */
+.carte-du-jour-badge {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: var(--rayon-pilule);
+    background: var(--peche);
+    box-shadow: 0 4px 14px rgba(30, 35, 30, .18);
+    font-family: var(--police-titre);
+    font-size: 13px;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--texte);
+}
+
+/* icône étoile */
+.carte-du-jour-badge::before {
+    content: "";
+    flex-shrink: 0;
+    width: 12px;
+    height: 12px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.carte-du-jour-corps {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 48px clamp(28px, 4vw, 56px);
+}
+
+.carte-du-jour-nom {
+    font-family: var(--police-titre);
+    font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--texte);
+    text-wrap: balance;
+}
+
+/* catégorie (vert) et origine (pêche) : mêmes tags que la fenêtre de recette */
+.carte-du-jour-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+    list-style: none;
+}
+
+.carte-du-jour-tags:empty {
+    display: none;
+}
+
+.carte-du-jour-tags li {
+    padding: 4px 12px;
+    border-radius: var(--rayon-pilule);
+    background: var(--tag-vert);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--vert);
+}
+
+.carte-du-jour-tags .tag-origine {
+    background: var(--tag-peche);
+    color: var(--tag-peche-texte);
+}
+
+/* début des instructions, coupé à 3 lignes */
+.carte-du-jour-extrait {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    overflow: hidden;
+    max-width: 52ch;
+    margin-top: 18px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--texte-doux);
+}
+
+.carte-du-jour-stats {
+    display: flex;
+    gap: 36px;
+    margin-top: 22px;
+    list-style: none;
+}
+
+.carte-du-jour-stats:empty {
+    display: none;
+}
+
+.carte-du-jour-stats li {
+    display: flex;
+    flex-direction: column;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--texte-doux);
+}
+
+.carte-du-jour-stats strong {
+    font-family: var(--police-titre);
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1.25;
+    font-variant-numeric: tabular-nums;
+    color: var(--vert);
+}
+
+.recette-du-jour-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    height: 48px;
+    margin-top: 28px;
+    padding: 0 26px;
+    border: none;
+    border-radius: var(--rayon-pilule);
+    background: var(--vert);
+    font-family: var(--police-titre);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blanc);
+    cursor: pointer;
+    transition: background-color .2s, transform .15s;
+}
+
+/* flèche qui avance au survol de la carte */
+.recette-du-jour-action::after {
+    content: "";
+    width: 16px;
+    height: 16px;
+    background: currentColor;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+    transition: transform .25s ease;
+}
+
+.carte-du-jour:hover .recette-du-jour-action {
+    background: var(--vert-fonce);
+}
+
+.carte-du-jour:hover .recette-du-jour-action::after {
+    transform: translateX(3px);
+}
+
+.recette-du-jour-action:active {
+    transform: scale(.97);
+}
+
+.recette-du-jour-action:focus-visible {
+    outline: 3px solid var(--peche);
+    outline-offset: 3px;
+}
+
+/* squelette pendant le chargement : même forme que la carte finale */
+.carte-du-jour-squelette {
+    cursor: default;
+}
+
+.carte-du-jour-squelette:hover {
+    box-shadow: var(--ombre-carte);
+}
+
+.carte-du-jour-squelette .carte-du-jour-visuel,
+.carte-du-jour-squelette .carte-du-jour-corps span {
+    background: linear-gradient(100deg, var(--sauge) 40%, #F1F4EF 50%, var(--sauge) 60%) 100% 0 / 200% 100%;
+    animation: miroitement 1.4s ease-in-out infinite;
+}
+
+.carte-du-jour-squelette .carte-du-jour-corps span {
+    display: block;
+    width: 100%;
+    height: 14px;
+    border-radius: var(--rayon-pilule);
+}
+
+.carte-du-jour-squelette .carte-du-jour-corps span:nth-child(1) {
+    width: 70%;
+    height: 36px;
+    border-radius: 10px;
+}
+
+.carte-du-jour-squelette .carte-du-jour-corps span:nth-child(2) {
+    width: 40%;
+    height: 24px;
+    margin-top: 16px;
+}
+
+.carte-du-jour-squelette .carte-du-jour-corps span:nth-child(3) {
+    margin-top: 22px;
+}
+
+.carte-du-jour-squelette .carte-du-jour-corps span:nth-child(4) {
+    width: 80%;
+    margin-top: 12px;
+}
+
+.carte-du-jour-squelette .carte-du-jour-corps span:nth-child(5) {
+    width: 170px;
+    height: 48px;
+    margin-top: 40px;
+}
+
+/* aucune recette ou erreur : même encadré pointillé que les résultats de recherche */
+.recette-du-jour-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 36px 24px;
+    border: 1.5px dashed #CDD3C8;
+    border-radius: var(--rayon-carte);
+    background: rgba(255, 255, 255, .6);
+    font-size: 15px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--texte-doux);
+    animation: apparition .4s cubic-bezier(.2, .7, .3, 1);
+}
+
+.recette-du-jour-reessayer {
+    height: 44px;
+    padding: 0 22px;
+    border: 1.5px solid var(--vert);
+    border-radius: var(--rayon-pilule);
+    background: transparent;
+    font-family: var(--police-titre);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--vert);
+    cursor: pointer;
+    transition: background-color .2s, color .2s;
+}
+
+.recette-du-jour-reessayer:hover {
+    background: var(--vert);
+    color: var(--blanc);
+}
+
+.recette-du-jour-reessayer:focus-visible {
+    outline: 3px solid var(--peche);
+    outline-offset: 3px;
+}
+
+@keyframes miroitement {
+    to {
+        background-position: 0 0;
+    }
+}
+
+/* tablette et mobile : la photo passe au-dessus du texte */
+@media (max-width: 768px) {
+    #recette-du-jour {
+        padding-bottom: 56px;
+    }
+
+    #recette-du-jour > h2 {
+        margin-bottom: 20px;
+    }
+
+    .carte-du-jour {
+        grid-template-columns: minmax(0, 1fr);
+        min-height: 0;
+    }
+
+    .carte-du-jour-visuel {
+        aspect-ratio: 16 / 10;
+    }
+
+    .carte-du-jour-corps {
+        padding: 28px 24px 32px;
+    }
+}
+
+@media (max-width: 540px) {
+    .carte-du-jour {
+        border-radius: 20px;
+    }
+
+    .carte-du-jour-visuel {
+        aspect-ratio: 4 / 3;
+    }
+
+    .carte-du-jour-badge {
+        top: 14px;
+        left: 14px;
+    }
+
+    .carte-du-jour-stats {
+        gap: 28px;
+    }
+
+    .recette-du-jour-action {
+        align-self: stretch;
+        justify-content: center;
+    }
+}
+
 /* ---------- Grille de recettes ---------- */
+
+/* même gouttière que les autres sections : les cartes ne touchent plus les bords de l'écran */
+#hasard {
+    padding: 0 var(--bord);
+}
 
 #recette {
     grid-area: grille;

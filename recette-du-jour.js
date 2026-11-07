@@ -16,10 +16,12 @@ $(function () {
 
     // Création de la section recette du jour
     const section = $("<section>", {
-        id: "recette-du-jour"
+        id: "recette-du-jour",
+        "aria-labelledby": "recette-du-jour-titre"
     });
 
     const titre = $("<h2>", {
+        id: "recette-du-jour-titre",
         text: "Recette du jour"
     });
 
@@ -52,38 +54,172 @@ $(function () {
     }
 
 
+    // Date du jour en toutes lettres pour le badge, ex : "7 novembre"
+    function obtenirDateLisible() {
+
+        return new Date().toLocaleDateString("fr-FR", {
+            day: "numeric",
+            month: "long"
+        });
+    }
+
+
+    // Compte les ingrédients renseignés (l'API prévoit 20 emplacements)
+    function compterIngredients(recette) {
+
+        let nombre = 0;
+
+        for (let i = 1; i <= 20; i++) {
+
+            if ((recette[`strIngredient${i}`] || "").trim() !== "") {
+                nombre++;
+            }
+
+        }
+
+        return nombre;
+    }
+
+
+    // Découpe les instructions en étapes (une étape par ligne),
+    // sans les lignes vides ni les simples titres comme "STEP 1" ou "2."
+    function obtenirEtapes(recette) {
+
+        return (recette.strInstructions || "")
+            .split(/\r?\n/)
+            .map(ligne => ligne.trim())
+            .filter(ligne => ligne !== "" && !/^(step\s*)?\d+[.):]?$/i.test(ligne));
+    }
+
+
+    // Crée une statistique : le nombre en gros, le libellé en dessous
+    function creerStatistique(nombre, libelle) {
+
+        const pluriel = nombre > 1 ? "s" : "";
+
+        return $("<li>").append(
+            $("<strong>", { text: nombre }),
+            $("<span>", { text: libelle + pluriel })
+        );
+    }
+
+
+    // Affiche un squelette de la carte pendant le chargement
+    function afficherChargement() {
+
+        contenu.attr("aria-busy", "true").html(`
+            <div class="carte-du-jour carte-du-jour-squelette" role="status" aria-label="Chargement de la recette du jour">
+                <div class="carte-du-jour-visuel"></div>
+                <div class="carte-du-jour-corps">
+                    <span></span><span></span><span></span><span></span><span></span>
+                </div>
+            </div>
+        `);
+    }
+
+
+    // Affiche un message (aucune recette, erreur réseau) avec un bouton pour réessayer
+    function afficherMessage(message) {
+
+        const bloc = $("<div>", {
+            class: "recette-du-jour-message",
+            role: "alert"
+        });
+
+        const texte = $("<p>", {
+            text: message
+        });
+
+        const boutonReessayer = $("<button>", {
+            type: "button",
+            class: "recette-du-jour-reessayer",
+            text: "Réessayer"
+        });
+
+        boutonReessayer.on("click", chargerRecetteDuJour);
+
+        bloc.append(texte, boutonReessayer);
+
+        contenu.removeAttr("aria-busy").empty().append(bloc);
+    }
+
+
     // Affiche la recette dans une carte
     function afficherRecetteDuJour(recette) {
 
         // Vide la section avant d'afficher la recette
-        contenu.empty();
+        contenu.removeAttr("aria-busy").empty();
 
-        const carte = $("<div>", {
+        const carte = $("<article>", {
             class: "carte carte-du-jour"
+        });
+
+        // Partie gauche : la photo et le badge avec la date
+        const visuel = $("<div>", {
+            class: "carte-du-jour-visuel"
+        });
+
+        const image = $("<img>", {
+            src: recette.strMealThumb,
+            alt: recette.strMeal,
+            width: 700,
+            height: 700
+        });
+
+        const badge = $("<p>", {
+            class: "carte-du-jour-badge",
+            text: "Sélection du " + obtenirDateLisible()
+        });
+
+        visuel.append(image, badge);
+
+        // Partie droite : les informations de la recette
+        const corps = $("<div>", {
+            class: "carte-du-jour-corps"
         });
 
         // Nom de la recette
         const nom = $("<h3>", {
+            class: "carte-du-jour-nom",
             text: recette.strMeal
         });
 
-        // Image de la recette
-        const image = $("<img>", {
-            src: recette.strMealThumb,
-            alt: recette.strMeal
+        // Catégorie et origine sous forme de tags
+        const tags = $("<ul>", {
+            class: "carte-du-jour-tags",
+            "aria-label": "Catégorie et origine"
         });
 
-        // Catégorie de la recette
-        const categorie = $("<p>", {
-            text: "Catégorie : " +
-                (recette.strCategory || "Non renseignée")
+        if (recette.strCategory) {
+            tags.append($("<li>", { text: recette.strCategory }));
+        }
+
+        if (recette.strArea) {
+            tags.append($("<li>", { class: "tag-origine", text: recette.strArea }));
+        }
+
+        // Début des instructions (le CSS coupe le texte après 3 lignes)
+        const etapes = obtenirEtapes(recette);
+
+        const extrait = $("<p>", {
+            class: "carte-du-jour-extrait",
+            text: etapes.join(" ") || "Instructions indisponibles."
         });
 
-        // Origine de la recette
-        const origine = $("<p>", {
-            text: "Origine : " +
-                (recette.strArea || "Non renseignée")
+        // Nombre d'ingrédients et d'étapes
+        const nombreIngredients = compterIngredients(recette);
+
+        const statistiques = $("<ul>", {
+            class: "carte-du-jour-stats"
         });
+
+        if (nombreIngredients > 0) {
+            statistiques.append(creerStatistique(nombreIngredients, "ingrédient"));
+        }
+
+        if (etapes.length > 0) {
+            statistiques.append(creerStatistique(etapes.length, "étape"));
+        }
 
         // Bouton permettant de voir les détails
         const bouton = $("<button>", {
@@ -109,13 +245,15 @@ $(function () {
         });
 
         // Ajout des éléments à la carte
-        carte.append(
+        corps.append(
             nom,
-            image,
-            categorie,
-            origine,
+            tags,
+            extrait,
+            statistiques,
             bouton
         );
+
+        carte.append(visuel, corps);
 
         // Affichage dans la page
         contenu.append(carte);
@@ -125,7 +263,7 @@ $(function () {
     // Récupère une nouvelle recette aléatoire
     function chargerRecetteDuJour() {
 
-        contenu.text("Chargement de la recette du jour...");
+        afficherChargement();
 
         $.ajax({
 
@@ -138,7 +276,7 @@ $(function () {
             // Vérifie que l'API a renvoyé une recette
             if (!donnees.meals || donnees.meals.length === 0) {
 
-                contenu.text("Aucune recette disponible.");
+                afficherMessage("Aucune recette disponible pour le moment.");
                 return;
 
             }
@@ -177,8 +315,8 @@ $(function () {
                 erreur
             );
 
-            contenu.text(
-                "Impossible de charger la recette du jour."
+            afficherMessage(
+                "Impossible de charger la recette du jour. Vérifiez votre connexion."
             );
 
         });
