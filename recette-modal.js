@@ -47,7 +47,7 @@ function afficherModaleRecette(recette) {
         }));
     }
     contenu.append($("<p>", { text: "Catégorie : " + (recette.strCategory || "Non renseignée") }));
-    contenu.append($("<p>", { text: "Origine : " + (recette.strArea || "Non renseignée") }));
+    contenu.append($("<p>", { text: "Origine : " + (recette.strCountry || "Non renseignée") }));
     contenu.append($("<h3>", { text: "Ingrédients" }));
 
     const ingredients = $("<ul>", { class: "popup-ingredients" });
