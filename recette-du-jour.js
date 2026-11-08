@@ -15,24 +15,8 @@ $(function () {
     const cleDate = "dateRecetteDuJour";
 
     // Création de la section recette du jour
-    const section = $("<section>", {
-        id: "recette-du-jour",
-        "aria-labelledby": "recette-du-jour-titre"
-    });
-
-    const titre = $("<h2>", {
-        id: "recette-du-jour-titre",
-        text: "Recette du jour"
-    });
-
-    const contenu = $("<div>", {
-        class: "recette-du-jour-contenu"
-    });
-
-    section.append(titre, contenu);
-
-    // On place la section avant les recettes aléatoires
-    $("#hasard").before(section);
+    const section = $("#recette-du-jour");
+    const contenu = section.find(".recette-du-jour-contenu");
 
 
     // Récupère la date du jour au format AAAA-MM-JJ
