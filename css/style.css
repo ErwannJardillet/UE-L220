@@ -1176,6 +1176,16 @@ footer {
     color: var(--vert);
 }
 
+#explorer-categories h3 {
+    margin-bottom: 14px;
+    padding: 16px 18px 0;
+    font-family: var(--police-titre);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--texte);
+}
+
 .categorie-grid {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
