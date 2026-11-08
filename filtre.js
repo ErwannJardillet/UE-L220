@@ -1,3 +1,4 @@
+//Remplissage du filtre categorie
 function chargerCategories(){
     $.ajax({
         url: 'https://www.themealdb.com/api/json/v1/1/list.php?c=list',
@@ -19,6 +20,7 @@ function chargerCategories(){
     })
 }
 
+//Remplissage du filtre pays
 function chargerPays(){
     $.ajax({
         url: 'https://www.themealdb.com/api/json/v1/1/list.php?a=list',
@@ -45,6 +47,7 @@ function chargerPays(){
     })
 }
 
+//Remplissage du filtre ingredient
 function chargerIngredient(){
     $.ajax({
         url: 'https://www.themealdb.com/api/json/v1/1/list.php?i=list',

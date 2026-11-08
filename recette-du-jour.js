@@ -14,7 +14,7 @@ $(function () {
     const cleRecette = "recetteDuJour";
     const cleDate = "dateRecetteDuJour";
 
-    // Création de la section recette du jour
+    
     const section = $("#recette-du-jour");
     const contenu = section.find(".recette-du-jour-contenu");
 
