@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             recettesAAfficher.forEach(function (recette) {
                 const carte = $('<div>').addClass('carte carte-categorie');
 
-                $('<h3>').text(recette.strMeal).appendTo(carte);
+                $('<h2>').text(recette.strMeal).appendTo(carte);
                 $('<img>').attr({
                     src: recette.strMealThumb,
                     alt: recette.strMeal

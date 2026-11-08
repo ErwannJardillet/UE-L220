@@ -1179,7 +1179,7 @@ footer {
     color: var(--vert);
 }
 
-#explorer-categories h3 {
+#explorer-categories .carte h2 {
     margin-bottom: 14px;
     padding: 16px 18px 0;
     font-family: var(--police-titre);
