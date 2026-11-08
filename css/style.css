@@ -698,6 +698,16 @@ nav a:focus-visible {
     padding: 0 var(--bord);
 }
 
+#hasard > h2 {
+    margin-bottom: 28px;
+    font-family: var(--police-titre);
+    font-size: clamp(2rem, 3vw, 2.6rem);
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--vert);
+}
+
 #recette {
     grid-area: grille;
     display: grid;
@@ -976,6 +986,9 @@ footer {
     padding: 28px var(--bord);
     background: var(--footer);
     color: var(--creme);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* ---------- Animations ---------- */
