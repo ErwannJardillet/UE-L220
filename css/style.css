@@ -283,14 +283,12 @@ nav a:focus-visible {
 
 /* même marge haute que la recherche : les deux restent centrés sur la ligne */
 #autre-recette {
-    grid-area: bouton;
     justify-self: end;
     align-self: center;
     display: inline-flex;
     align-items: center;
     gap: 8px;
     height: 44px;
-    margin-top: 28px;
     padding: 0 22px;
     border: 1.5px solid var(--vert);
     border-radius: var(--rayon-pilule);
@@ -301,6 +299,8 @@ nav a:focus-visible {
     color: var(--vert);
     cursor: pointer;
     transition: background-color .2s, color .2s, transform .15s;
+    float: right;
+    margin-top: -60px;
 }
 
 /* icône rafraîchir */
@@ -1151,7 +1151,6 @@ footer {
 }
 
 #explorer-categories {
-    min-height: 620px;
     padding: 0 var(--bord) 64px;
 }
 
@@ -1161,6 +1160,10 @@ footer {
 
 #categorie-recettes {
     min-height: 420px;
+}
+
+#categorie-recettes[hidden] {
+    display: none !important;
 }
 
 #recette-categorie {
